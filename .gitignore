@@ -1,0 +1,17 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/guillotine
+guillotine.so
+guillotine.dylib
+guillotine.dll
+guillotine.a
+guillotine.lib
+guillotine-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst
+dub.selections.json

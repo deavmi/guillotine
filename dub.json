@@ -1,0 +1,11 @@
+{
+	"authors": [
+		"Tristan B. Velloza Kildaire"
+	],
+	"copyright": "Copyright © 2023, Tristan B. Kildaire",
+	"description": "Executor framework with future-based task submission",
+	"license": "LGPL 3.0",
+	"name": "guillotine",
+	"targetType": "library",
+	"homepage": "https://deavmi.assigned.network/projects/"
+}
