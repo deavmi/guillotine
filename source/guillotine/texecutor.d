@@ -13,3 +13,10 @@ private bool isSupportedReturn(alias FuncSymbol)()
            __traits(isSame, ReturnType!(FuncSymbol), void);
 }
 
+import std.traits : arity;
+private bool isSupportedFunction(alias FuncSymbol)()
+{
+    // Arity must be 0
+    return arity!(FuncSymbol) == 0 && isSupportedReturn!(FuncSymbol);
+}
+
