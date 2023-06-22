@@ -22,7 +22,13 @@ private bool isSupportedFunction(alias FuncSymbol)()
 
 import guillotine.value;
 
-private struct Task
+
+import guillotine.value;
+import guillotine.future;
+import guillotine.provider;
+
+// TODO: Make this a class and call it FutureTask which extends Task interface
+public class FutureTask : Task
 {
     // Related future for this task
     private Future future;
@@ -31,12 +37,12 @@ private struct Task
     private Value function() func;
 
    
-    public Value run()
+    public void run()
     {
         Value retVal = func();
 
         // TODO: wake future slpeers
-
-        return retVal;
+        // TODO: Store retVal into it
     }
 }
+
