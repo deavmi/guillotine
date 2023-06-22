@@ -1,7 +1,6 @@
 module guillotine.providers.sequential;
 
-import guillotine.provider : Provider;
-import guillotine.task : Task;
+import guillotine.provider;
 
 public final class Sequential : Provider
 {

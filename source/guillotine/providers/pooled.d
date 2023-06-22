@@ -1,7 +1,6 @@
 module guillotine.providers.pooled;
 
-import guillotine.provider : Provider;
-import guillotine.task : Task;
+import guillotine.provider;
 
 public final class Pooled : Provider
 {
