@@ -20,3 +20,23 @@ private bool isSupportedFunction(alias FuncSymbol)()
     return arity!(FuncSymbol) == 0 && isSupportedReturn!(FuncSymbol);
 }
 
+import guillotine.value;
+
+private struct Task
+{
+    // Related future for this task
+    private Future future;
+
+    // Function to call
+    private Value function() func;
+
+   
+    public Value run()
+    {
+        Value retVal = func();
+
+        // TODO: wake future slpeers
+
+        return retVal;
+    }
+}
