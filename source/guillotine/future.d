@@ -66,4 +66,20 @@ public final class Future
         // Wake up any sleepers
         this.event.notifyAll();
     }
+
+    /** 
+     * Sets this `Future` into the error state and wakes
+     * up anybody who was awaiting it
+     *
+     * Throws:
+     *   TODO: handle the libsnooze event
+     */
+    package void error()
+    {
+        // Set the state
+        this.state = State.ERRORED;
+
+        // Wake up any sleepers
+        this.event.notifyAll();
+    }
 }
