@@ -1,6 +1,8 @@
 module guillotine.value;
 
-private union ValueUnion
+public struct Empty {}
+
+public union ValueUnion
 {
     Object object;
     int integer;
@@ -8,11 +10,12 @@ private union ValueUnion
     float floating;
     bool boolean;
     string str;
+    Empty none;
 }
 
 public struct Value
 {
-    private ValueUnion value;
+    public ValueUnion value;
 
     this(Object value)
     {
