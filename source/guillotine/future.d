@@ -44,6 +44,13 @@ public final class Future
         this.event = event;
     }
 
+    // TODO: Clean up above and make us make the future's event
+    // ... the user shouldn't have to pass one in
+    package this()
+    {
+        this(new Event());
+    }
+
     /** 
      * Sets this `Future` as completed by storing the
      * provided result into it and waking up anybody
