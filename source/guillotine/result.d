@@ -6,6 +6,11 @@ public struct Result
 {
     private Value value;
 
+    this(Value value)
+    {
+        this.value = value;
+    }
+
     public Value getValue()
     {
         return value;
