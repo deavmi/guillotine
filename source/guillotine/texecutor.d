@@ -36,13 +36,46 @@ public class FutureTask : Task
     // Function to call
     private Value function() func;
 
+
+    this(Future future, Value function() func)
+    {
+        this.future = future;
+        this.func = func;
+    }
+
    
     public void run()
     {
-        Value retVal = func();
+        // TODO: May this boitjie throw functions?
+        // ... if it can we could get errors and
+        // ... set the Future below correctly
+        bool hasError;
+        
+        Value retVal;
+
+        try
+        {
+            retVal = func();
+        }
+        catch(Exception e)
+        {
+            hasError = true;
+        }
+
+        // TODO: Store retVal into it
+        if(!hasError)
+        {
+            import guillotine.result;
+            future.complete(Result(retVal));
+        }
+        else
+        {
+            future.error();
+        }
 
         // TODO: wake future slpeers
-        // TODO: Store retVal into it
+        
+        
     }
 }
 
