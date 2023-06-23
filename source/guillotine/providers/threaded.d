@@ -8,4 +8,14 @@ public final class Threaded : Provider
     {
         // TOO: Implement me
     }
+
+    public void start()
+    {
+
+    }
+
+    public void stop()
+    {
+        
+    }
 }
