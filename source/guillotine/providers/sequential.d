@@ -35,7 +35,8 @@ public final class Sequential : Provider
         // Lock the queue
         taskQueueLock.lock();
 
-        // TODO: Implement me
+        // Append the task
+        taskQueue.insertAfter(taskQueue[], task);
 
         // Unlock the queue
         taskQueueLock.unlock();
@@ -89,6 +90,9 @@ public final class Sequential : Provider
                 {
                     potTask.run();
                 }
+
+                // TODO: We could enqueue and before we get below
+                // ... another submit is done
 
                 // Sleep till awoken for an enqueue
                 event.wait();
