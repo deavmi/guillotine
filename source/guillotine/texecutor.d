@@ -79,3 +79,66 @@ public class FutureTask : Task
     }
 }
 
+/** 
+ * Generates a `Value`-returning function with
+ * a 0 parameter arity based on an input symbol
+ * of an existing function which has 0 arity
+ * and return a supported type
+ *
+ * Params:
+ *   FuncIn = The name of the function to wrap
+ */
+template WorkerFunction(alias FuncIn)
+{
+    Value workerFunc()
+    {
+        alias funcInReturn = ReturnType!(FuncIn);
+        // TODO: Need more constructor
+
+
+        // Value value = Value(FuncIn());
+
+        Value value;
+        ValueUnion valUnion;
+
+        static if(__traits(isSame, funcInReturn, int))
+        {
+            valUnion.integer = FuncIn();
+        }
+        else static if(__traits(isSame, funcInReturn, uint))
+        {
+            valUnion.uinteger = FuncIn();
+        }
+        else static if(__traits(isSame, funcInReturn, float))
+        {
+            valUnion.floating = FuncIn();
+        }
+        else static if(__traits(isSame, funcInReturn, bool))
+        {
+            valUnion.boolean = FuncIn();
+        }
+        else static if(__traits(isSame, funcInReturn, string))
+        {
+            valUnion.str = FuncIn();
+        }
+        else static if(__traits(isSame, funcInReturn, Object))
+        {
+            valUnion.object = FuncIn();
+        }
+        else static if(__traits(isSame, funcInReturn, void))
+        {
+            // With no return type you just call it
+            FuncIn();
+
+            // We create an emoty struct
+            valUnion.none = Empty();
+        }
+        
+        
+        
+
+        value.value = valUnion;
+        return value;
+    }
+}
+
