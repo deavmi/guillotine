@@ -10,6 +10,6 @@
 	"homepage": "https://deavmi.assigned.network/projects/",
 	"dependencies": {
 		"dlog": ">=0.3.19",
-		"libsnooze": ">=1.0.0-beta"
+		"libsnooze": ">=1.2.0-beta"
 	}
 }
