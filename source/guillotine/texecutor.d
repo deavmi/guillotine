@@ -2,8 +2,12 @@ module guillotine.texecutor;
 
 import guillotine.executor : Executor;
 import guillotine.future : Future;
+import guillotine.value;
+import guillotine.result : Result;
+import guillotine.provider;
+import std.traits : isFunction, FunctionTypeOf, ReturnType, arity;
 
-import std.traits : ReturnType;
+
 private bool isSupportedReturn(alias FuncSymbol)()
 {
     return __traits(isSame, ReturnType!(FuncSymbol), int) ||
@@ -13,22 +17,13 @@ private bool isSupportedReturn(alias FuncSymbol)()
            __traits(isSame, ReturnType!(FuncSymbol), void);
 }
 
-import std.traits : arity;
 private bool isSupportedFunction(alias FuncSymbol)()
 {
     // Arity must be 0
     return arity!(FuncSymbol) == 0 && isSupportedReturn!(FuncSymbol);
 }
 
-import guillotine.value;
-
-
-import guillotine.value;
-import guillotine.future;
-import guillotine.provider;
-
-// TODO: Make this a class and call it FutureTask which extends Task interface
-public class FutureTask : Task
+private class FutureTask : Task
 {
     // Related future for this task
     private Future future;
@@ -65,7 +60,6 @@ public class FutureTask : Task
         // TODO: Store retVal into it
         if(!hasError)
         {
-            import guillotine.result;
             future.complete(Result(retVal));
         }
         else
@@ -146,4 +140,6 @@ template WorkerFunction(alias FuncIn)
         return value;
     }
 }
+
+
 
