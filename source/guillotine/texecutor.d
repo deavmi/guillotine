@@ -90,6 +90,11 @@ public class FutureTask : Task
  */
 template WorkerFunction(alias FuncIn)
 {
+    /** 
+     * Generated "wrapper" function
+     *
+     * Returns: the `Value` of the result
+     */
     Value workerFunc()
     {
         alias funcInReturn = ReturnType!(FuncIn);
