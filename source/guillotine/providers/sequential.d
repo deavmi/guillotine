@@ -23,6 +23,7 @@ public final class Sequential : Provider
         this.event = new Event();
         this.taskQueueLock = new Mutex();
         this.runner = new Thread(&worker);
+        this.event.ensure(runner);
     }
 
     public override void consumeTask(Task task)
@@ -65,6 +66,9 @@ public final class Sequential : Provider
         {
             try
             {
+                // Sleep till awoken for an enqueue
+                event.wait();
+
                 // Lock the queue
                 taskQueueLock.lock();
 
@@ -91,12 +95,6 @@ public final class Sequential : Provider
                     potTask.run();
                 }
 
-                // TODO: We could enqueue and before we get below
-                // ... another submit is done
-
-                // Sleep till awoken for an enqueue
-                event.wait();
-                
                 // TODO: After wait check if boolean
                 // ... was flipped to stop (no longer run)
             }
