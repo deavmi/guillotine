@@ -163,7 +163,7 @@ import guillotine.providers.sequential : Sequential;
 /** 
  * The default `Provider`
  */
-alias DefaultProvider = Sequential;
+public alias DefaultProvider = Sequential;
 
 /** 
  * Provides a task submission service upon
@@ -196,14 +196,22 @@ public class Executor
         this.provider = provider;
     }
 
+    /** 
+     * Constructs a new `Executor` wuth the
+     * default provider
+     */
     this()
     {
         this(new DefaultProvider());
     }
 
-
-    
-
+    /** 
+     * Submits the provided function as a task
+     * and returns a handle to it in the form
+     * of a future
+     *
+     * Returns: the task's `Future`
+     */
     public Future submitTask(alias Symbol)()
     if (isFunction!(Symbol) && isSupportedFunction!(Symbol))
     {
