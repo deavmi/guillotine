@@ -27,9 +27,14 @@ public final class Future
     private State state = State.NOT_STARTED;
 
     /** 
-     * The result of the task
+     * The result of the task (on success)
      */
     private Result result; // TODO: Volatile maybe?
+
+    /** 
+     * The error result (on error)
+     */
+    private Exception errResult; // TODO: Volatile maybe?
 
     /** 
      * Constructs a new `Future`
@@ -41,6 +46,10 @@ public final class Future
 
     public Result await()
     {
+        // TODO: DO a check here for finished state
+        // ... or error and return immediately/
+        // ... immediately throw an exception
+
         // TODO: kak
         bool doneYet = false;
         while(!doneYet)
@@ -103,11 +112,16 @@ public final class Future
      * Sets this `Future` into the error state and wakes
      * up anybody who was awaiting it
      *
+     * Params:
+     *   errResult = the `Exception` which occurred
      * Throws:
      *   TODO: handle the libsnooze event
      */
-    package void error()
+    package void error(Exception errResult)
     {
+        // Store the error
+        this.errResult = errResult;
+
         // Set the state
         this.state = State.ERRORED;
 

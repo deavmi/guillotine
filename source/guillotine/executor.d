@@ -62,12 +62,12 @@ private class FutureTask : Task
      * to the associated `Future`
      */
     public void run()
-    {
-        // If there waas an error in calling `func()`
-        bool hasError;
-        
+    {    
         // Return value (in non-error case)
         Value retVal;
+
+        // The exception (in error case)
+        Exception errVal;
 
         try
         {
@@ -75,16 +75,16 @@ private class FutureTask : Task
         }
         catch(Exception e)
         {
-            hasError = true;
+            errVal = e;
         }
 
-        if(!hasError)
+        if(errVal is null)
         {
             future.complete(Result(retVal));
         }
         else
         {
-            future.error();
+            future.error(errVal);
         }
     }
 }
@@ -219,7 +219,7 @@ public class Executor
         // Create the Future
         Future future = new Future();
 
-        // Create the FUture task
+        // Create the Future task
         task = new FutureTask(future, ptr);
 
         // Submit the task
