@@ -44,6 +44,18 @@ public final class Future
         this.event = new Event();
     }
 
+    /** 
+     * Awaits this future either returning the result
+     * from its computation throwing the exception which
+     * occurred during it.
+     *
+     * Returns: the `Result` from the computation
+     * Throws:
+     *   `GuillotineException` on fatal error
+     * Throws:
+     *   `Exception` the exception that occurred during
+     * computation
+     */
     public Result await()
     {
         // If we are already finished, return the value
