@@ -1,6 +1,5 @@
 module guillotine.texecutor;
 
-import guillotine.executor : Executor;
 import guillotine.future : Future;
 import guillotine.value;
 import guillotine.result : Result;
@@ -141,5 +140,83 @@ template WorkerFunction(alias FuncIn)
     }
 }
 
+import guillotine.providers.sequential : Sequential;
+
+/** 
+ * The default `Provider`
+ */
+alias DefaultProvider = Sequential;
+
+/** 
+ * Provides a task submission service upon
+ * which tasks can be submitted and a `Future`
+ * is returned as handle to that submitted task.
+ *
+ * The underlying scheduling/threading mechanism
+ * is provided in the form of a `Provider`
+ */
+public class Executor
+{
+    /** 
+     * Underlying thread provider
+     * whereby the tasks will be
+     * pushed into for running
+     */
+    private Provider provider;
+
+    /** 
+     * Constructs a new `Executor` with the given
+     * provider which provides us with some sort
+     * of underlying thread execution mechanism
+     * where the tasks will actually be executed
+     *
+     * Params:
+     *   provider = the `Provider` to use
+     */
+    this(Provider provider)
+    {
+        this.provider = provider;
+    }
+
+    this()
+    {
+        this(new DefaultProvider());
+    }
 
 
+    
+
+    public Future submitTask(alias Symbol)()
+    if (isFunction!(Symbol) && isSupportedFunction!(Symbol))
+    {
+        FutureTask task;
+
+        Value function() ptr;
+        alias func = Symbol;
+        
+
+        ptr = &WorkerFunction!(func).workerFunc;
+
+        version(unittest)
+        {
+            import std.stdio;
+            writeln("Generated worker function: ", ptr);
+        }
+
+        // Create the Future
+        Future future = new Future();
+
+        // Create the FUture task
+        task = new FutureTask(future, ptr);
+
+        // Submit the task
+        provider.consumeTask(task);
+
+        version(unittest)
+        {
+            writeln("Just submitted future task: ", future);
+        }
+
+        return future;
+    }
+}
