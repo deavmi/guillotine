@@ -91,10 +91,6 @@ template WorkerFunction(alias FuncIn)
     Value workerFunc()
     {
         alias funcInReturn = ReturnType!(FuncIn);
-        // TODO: Need more constructor
-
-
-        // Value value = Value(FuncIn());
 
         Value value;
         ValueUnion valUnion;
