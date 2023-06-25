@@ -1,9 +1,0 @@
-{
-	"authors": [
-		"Tristan B. Velloza Kildaire"
-	],
-	"copyright": "Copyright © 2023, Tristan B. Velloza Kildaire",
-	"description": "Sequential task provider",
-	"license": "LGPL 3.0",
-	"name": "sequential"
-}
