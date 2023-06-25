@@ -5,6 +5,18 @@ guillotine
 
 Executor framework with future-based task submission and pluggable thread execution engines
 
+## Usage
+
+You can add this to your project easily by using:
+
+```bash
+dub add guillotine
+```
+
+## API
+
+The full API is documented at [here](https://guillotine.dpldocs.info/).
+
 ## Example
 
 Tests the submission of three tasks using the `Sequential` provider and with the first two tasks having values to return and the last having nothing.
@@ -71,15 +83,3 @@ public void hiVoid()
     Thread.sleep(dur!("seconds")(10));
 }
 ```
-
-## Usage
-
-You can add this to your project easily by using:
-
-```bash
-dub add guillotine
-```
-
-## API
-
-The full API is documented at (TODO: add this here)
