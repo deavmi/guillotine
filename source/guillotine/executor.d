@@ -257,6 +257,8 @@ unittest
     writeln("Fut1 waiting...");
     Result res1 = fut1.await();
     writeln("Fut1 done with: '", res1.getValue().value.integer, "'");
+
+    provider.stop();
 }
 
 version(unittest)
