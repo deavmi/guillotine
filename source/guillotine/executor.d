@@ -1,3 +1,6 @@
+/** 
+ * Executor service for task submission and tracking
+ */
 module guillotine.executor;
 
 import guillotine.future : Future;
@@ -6,7 +9,7 @@ import guillotine.result : Result;
 import guillotine.provider;
 import std.traits : isFunction, FunctionTypeOf, ReturnType, arity;
 
-
+// TODO: Document
 private bool isSupportedReturn(alias FuncSymbol)()
 {
     return __traits(isSame, ReturnType!(FuncSymbol), int) ||
@@ -16,6 +19,7 @@ private bool isSupportedReturn(alias FuncSymbol)()
            __traits(isSame, ReturnType!(FuncSymbol), void);
 }
 
+// TODO: Document
 private bool isSupportedFunction(alias FuncSymbol)()
 {
     // Arity must be 0
