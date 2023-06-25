@@ -56,7 +56,6 @@ private class FutureTask : Task
             hasError = true;
         }
 
-        // TODO: Store retVal into it
         if(!hasError)
         {
             future.complete(Result(retVal));
@@ -65,10 +64,6 @@ private class FutureTask : Task
         {
             future.error();
         }
-
-        // TODO: wake future slpeers
-        
-        
     }
 }
 
