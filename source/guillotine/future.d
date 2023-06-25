@@ -1,3 +1,6 @@
+/** 
+ * Defines the `Future` type and related types
+ */
 module guillotine.future;
 
 // TODO: Examine the below import which seemingly fixes stuff for libsnooze
@@ -6,6 +9,9 @@ import libsnooze;
 
 import guillotine.result : Result;
 
+/** 
+ * Defines the state of the `Future`
+ */
 public enum State
 {
     NOT_STARTED,
@@ -14,6 +20,9 @@ public enum State
     ERRORED
 }
 
+/** 
+ * Defines a future
+ */
 public final class Future
 {
     /** 
