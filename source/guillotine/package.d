@@ -10,12 +10,17 @@ module guillotine;
 public import guillotine.executor : Executor;
 
 /** 
+ * Defines the interface required for task submission
+ * and the task itself
+ */
+public import guillotine.provider : Provider;
+
+/** 
  * Defines the `Future` type and related types
  */
 public import guillotine.future : Future;
 
 // TODO: Clean this below one up later
-
 /** 
  * Defines a result which is retruned
  * from the process of awaiting a future
