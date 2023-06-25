@@ -119,6 +119,16 @@ public final class Sequential : Provider
         }
     }
 
+    /** 
+     * Stops the provider.
+     *
+     * If there is a task executing currently
+     * then it will finish, any other submitted
+     * tasks will not be run.
+     *
+     * This method will hang till said task
+     * has finished executing.
+     */
     public void stop()
     {
         // TODO: set flag
@@ -126,5 +136,8 @@ public final class Sequential : Provider
 
         // TODO: notify
         this.event.notify(runner);
+
+        // TODO: Should we hang here till finished?
+        this.runner.join();
     }
 }
