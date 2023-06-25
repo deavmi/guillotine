@@ -51,6 +51,43 @@ public final class Future
         this(new Event());
     }
 
+    public Result await()
+    {
+        // TODO: kak
+        bool doneYet = false;
+        while(!doneYet)
+        {
+            try
+            {
+                event.wait();
+                doneYet = true;
+            }
+            catch(InterruptedException e)
+            {
+                // Do nothing
+            }
+            catch(FatalException e)
+            {
+                // TODO: Throw a FatalGuillaotine here
+            }
+        }
+
+        if(this.state == State.ERRORED)
+        {
+            // TODO: Throw an exception then
+            throw new Exception("Had error");
+        }
+        else if(this.state == State.FINISHED)
+        {
+            return this.result;
+        }
+        else
+        {
+            // TODO: handle this earlier on
+            return Result();
+        }
+    }
+
     /** 
      * Sets this `Future` as completed by storing the
      * provided result into it and waking up anybody
