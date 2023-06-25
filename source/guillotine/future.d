@@ -19,7 +19,7 @@ public final class Future
     /** 
      * `libsnooze` event
      */
-    package Event event;
+    private Event event;
 
     /** 
      * State of the future
