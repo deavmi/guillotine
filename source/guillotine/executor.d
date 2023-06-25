@@ -239,25 +239,25 @@ unittest
 
     Provider provider = new Sequential();
 
-    // TODO: This should not be started here but
-    // ... BY tne executor (check if not already
-    // ... started and if so THEN start)
+    // Start the provider so it can execute
+    // submitted tasks
     provider.start();
 
+    // Create an executor with this provider
     Executor t = new Executor(provider);
 
 
+    // Submit a few tasks
     Future fut1 = t.submitTask!(hi);
-
     Future fut2 = t.submitTask!(hiFloat);
-
     Future fut3 = t.submitTask!(hiVoid);
 
-
+    // Await on the first task
     writeln("Fut1 waiting...");
     Result res1 = fut1.await();
     writeln("Fut1 done with: '", res1.getValue().value.integer, "'");
 
+    // Stops the internal task runner thread
     provider.stop();
 }
 
