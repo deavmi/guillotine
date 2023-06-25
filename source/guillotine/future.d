@@ -32,23 +32,11 @@ public final class Future
     private Result result; // TODO: Volatile maybe?
 
     /** 
-     * Constructs a new `Future` with the given
-     * underlying `libsnooze` event to be used
-     * for waking awaiting threads
-     *
-     * Params:
-     *   event = the `Event` object
+     * Constructs a new `Future`
      */
-    package this(Event event)
+    public this()
     {
-        this.event = event;
-    }
-
-    // TODO: Clean up above and make us make the future's event
-    // ... the user shouldn't have to pass one in
-    package this()
-    {
-        this(new Event());
+        this.event = new Event();
     }
 
     public Result await()
