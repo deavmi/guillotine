@@ -71,6 +71,11 @@ private class FutureTask : Task
 
         try
         {
+            // Set the future's state to running now
+            import guillotine.future : State;
+            future.state = State.RUNNING;
+
+            // Run the function and obtain its return value (on success)
             retVal = func();
         }
         catch(Exception e)
@@ -273,6 +278,7 @@ unittest
     writeln("Fut1 waiting...");
     Result res1 = fut1.await();
     writeln("Fut1 done with: '", res1.getValue().value.integer, "'");
+    assert(res1.getValue().value.integer == 69);
 
     // Stops the internal task runner thread
     provider.stop();

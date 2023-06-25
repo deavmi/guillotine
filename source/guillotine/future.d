@@ -24,7 +24,7 @@ public final class Future
     /** 
      * State of the future
      */
-    private State state = State.NOT_STARTED;
+    package State state = State.NOT_STARTED;
 
     /** 
      * The result of the task (on success)
@@ -46,42 +46,55 @@ public final class Future
 
     public Result await()
     {
-        // TODO: DO a check here for finished state
-        // ... or error and return immediately/
-        // ... immediately throw an exception
-
-        // TODO: kak
-        bool doneYet = false;
-        while(!doneYet)
-        {
-            try
-            {
-                event.wait();
-                doneYet = true;
-            }
-            catch(InterruptedException e)
-            {
-                // Do nothing
-            }
-            catch(FatalException e)
-            {
-                // TODO: Throw a FatalGuillaotine here
-            }
-        }
-
-        if(this.state == State.ERRORED)
-        {
-            // TODO: Throw an exception then
-            throw new Exception("Had error");
-        }
-        else if(this.state == State.FINISHED)
+        // If we are already finished, return the value
+        if(this.state == State.FINISHED)
         {
             return this.result;
         }
+        // If we had an error then throw the error
+        else if(this.state == State.ERRORED)
+        {
+            throw errResult;
+        }
+        // If we are not yet running then throw an exception
+        else if(this.state == State.NOT_STARTED)
+        {
+            // TODO: make a custom guillotine exception
+            throw new Exception("Cannot await() on future not running");
+        }
+        // Then we must be in the RUNNING state
         else
         {
-            // TODO: handle this earlier on
-            return Result();
+            bool doneYet = false;
+            while(!doneYet)
+            {
+                try
+                {
+                    event.wait();
+                    doneYet = true;
+                }
+                catch(InterruptedException e)
+                {
+                    // Do nothing
+                }
+                catch(FatalException e)
+                {
+                    // TODO: Throw a FatalGuillaotine here
+                    // TODO: make a custom guillotine exception
+                }
+            }
+
+            // If we had an error then throw it
+            if(this.state == State.ERRORED)
+            {
+                throw this.errResult;
+            }
+            // If we finished successfully, then return the result
+            // (Note: That is the only way this branch would run)
+            else
+            {
+                return this.result;
+            }
         }
     }
 
