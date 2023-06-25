@@ -1,4 +1,4 @@
-module guillotine.texecutor;
+module guillotine.executor;
 
 import guillotine.future : Future;
 import guillotine.value;
