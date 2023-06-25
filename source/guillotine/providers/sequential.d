@@ -17,6 +17,7 @@ public final class Sequential : Provider
     private SList!(Task) taskQueue;
     private Mutex taskQueueLock;
     private Thread runner;
+    private bool running;
 
     this()
     {
@@ -56,18 +57,26 @@ public final class Sequential : Provider
     public void start()
     {
         // TODO: Set flag
+        this.running = true;
+
         runner.start();
     }   
 
     public void worker()
     {
         // TODO: Add running condition here?
-        while(true)
+        while(running)
         {
             try
             {
                 // Sleep till awoken for an enqueue
                 event.wait();
+
+                // Check if we are running, if not, exit
+                if(!running)
+                {
+                    continue;
+                }
 
                 // Lock the queue
                 taskQueueLock.lock();
@@ -113,7 +122,9 @@ public final class Sequential : Provider
     public void stop()
     {
         // TODO: set flag
+        this.running = false;
 
         // TODO: notify
+        this.event.notify(runner);
     }
 }
