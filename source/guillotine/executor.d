@@ -221,11 +221,16 @@ public class Executor
     }
 }
 
+version(unittest)
+{
+    import std.stdio : writeln;
+}
+
 /**
  * Tests the submission of three tasks using
  * the `Sequential` provider and with the first
  * two tasks having values to return and the last
- * havign nothing
+ * having nothing
  */
 unittest
 {
@@ -239,15 +244,28 @@ unittest
     provider.start();
 
     Executor t = new Executor(provider);
-    t.submitTask!(hi);
-    t.submitTask!(hiFloat);
-    t.submitTask!(hiVoid);
+
+
+    Future fut1 = t.submitTask!(hi);
+
+    Future fut2 = t.submitTask!(hiFloat);
+
+    Future fut3 = t.submitTask!(hiVoid);
+
+
+    writeln("Fut1 waiting...");
+    Result res1 = fut1.await();
+    writeln("Fut1 done with: '", res1.getValue().value.integer, "'");
 }
 
 public int hi()
 {
     import std.stdio : writeln;
+    import core.thread : Thread, dur;
     writeln("Let's go hi()!");
+
+    // Pretend to do some work
+    Thread.sleep(dur!("seconds")(2));
 
     return 69;
 }
