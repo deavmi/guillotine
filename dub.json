@@ -10,5 +10,8 @@
 	"homepage": "https://deavmi.assigned.network/projects/guillotine/",
 	"dependencies": {
 		"libsnooze": ">=1.2.0-beta"
-	}
+	},
+	"subPackages": [
+		"providers/sequential/"
+	]
 }

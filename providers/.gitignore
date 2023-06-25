@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/providers
+providers.so
+providers.dylib
+providers.dll
+providers.a
+providers.lib
+providers-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst
