@@ -220,3 +220,49 @@ public class Executor
         return future;
     }
 }
+
+/**
+ * Tests the submission of three tasks using
+ * the `Sequential` provider and with the first
+ * two tasks having values to return and the last
+ * havign nothing
+ */
+unittest
+{
+    import guillotine.providers.sequential;
+
+    Provider provider = new Sequential();
+
+    // TODO: This should not be started here but
+    // ... BY tne executor (check if not already
+    // ... started and if so THEN start)
+    provider.start();
+
+    Executor t = new Executor(provider);
+    t.submitTask!(hi);
+    t.submitTask!(hiFloat);
+    t.submitTask!(hiVoid);
+}
+
+public int hi()
+{
+    import std.stdio : writeln;
+    writeln("Let's go hi()!");
+
+    return 69;
+}
+
+public float hiFloat()
+{
+    import std.stdio : writeln;
+    writeln("Let's go hiFloat()!");
+    
+    return 69.420;
+}
+
+public void hiVoid()
+{
+    import std.stdio : writeln;
+    writeln("Let's go hiVoid()!");
+}
+
