@@ -159,7 +159,6 @@ template WorkerFunction(alias FuncIn)
 }
 
 import guillotine.providers.sequential : Sequential;
-import kak;
 
 /** 
  * The default `Provider`

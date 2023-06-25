@@ -10,8 +10,5 @@
 	"homepage": "https://deavmi.assigned.network/projects/guillotine/",
 	"license": "LGPL 3.0",
 	"name": "guillotine",
-	"targetType": "library",
-	"subPackages": [
-		"./fokkers/kak"
-	]
+	"targetType": "library"
 }
