@@ -16,3 +16,4 @@ guillotine-test-*
 *.lst
 dub.selections.json
 libguillotine.a
+guillotine.code-workspace
