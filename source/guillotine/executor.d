@@ -236,6 +236,10 @@ version(unittest)
 unittest
 {
     import guillotine.providers.sequential;
+    import guillotine.executor;
+    import guillotine.future;
+    import guillotine.result;
+    import guillotine.provider;
 
     Provider provider = new Sequential();
 
