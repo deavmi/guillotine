@@ -56,13 +56,11 @@ public final class Future
         {
             throw errResult;
         }
-        // If we are not yet running then throw an exception
-        else if(this.state == State.NOT_STARTED)
-        {
-            // TODO: make a custom guillotine exception
-            throw new Exception("Cannot await() on future not running");
-        }
-        // Then we must be in the RUNNING state
+        // If we are in RUNNING or NOT_STARTED
+        // (Note: this can happen in executor usage too
+        // ( instead of just standalone usage as the time before
+        // the FutureTask sets to RUNNING and when our main thread
+        // calls await() can have it pickup on the NOT_STARTED case)
         else
         {
             bool doneYet = false;
