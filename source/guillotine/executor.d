@@ -224,6 +224,7 @@ public class Executor
 version(unittest)
 {
     import std.stdio : writeln;
+    import core.thread : Thread, dur;
 }
 
 /**
@@ -258,29 +259,33 @@ unittest
     writeln("Fut1 done with: '", res1.getValue().value.integer, "'");
 }
 
-public int hi()
+version(unittest)
 {
-    import std.stdio : writeln;
-    import core.thread : Thread, dur;
-    writeln("Let's go hi()!");
+    public int hi()
+    {
+        writeln("Let's go hi()!");
 
-    // Pretend to do some work
-    Thread.sleep(dur!("seconds")(2));
+        // Pretend to do some work
+        Thread.sleep(dur!("seconds")(2));
 
-    return 69;
+        return 69;
+    }
+
+    public float hiFloat()
+    {
+        writeln("Let's go hiFloat()!");
+
+        // Pretend to do some work
+        Thread.sleep(dur!("seconds")(10));
+        
+        return 69.420;
+    }
+
+    public void hiVoid()
+    {
+        writeln("Let's go hiVoid()!");
+
+        // Pretend to do some work
+        Thread.sleep(dur!("seconds")(10));
+    }
 }
-
-public float hiFloat()
-{
-    import std.stdio : writeln;
-    writeln("Let's go hiFloat()!");
-    
-    return 69.420;
-}
-
-public void hiVoid()
-{
-    import std.stdio : writeln;
-    writeln("Let's go hiVoid()!");
-}
-
