@@ -1,7 +1,18 @@
+/** 
+ * Defines a value that is part
+ * of a result
+ */
 module guillotine.value;
 
+/** 
+ * Represents a void value
+ */
 public struct Empty {}
 
+/** 
+ * Union defining the allocated space
+ * for the value
+ */
 public union ValueUnion
 {
     Object object;
@@ -13,23 +24,32 @@ public union ValueUnion
     Empty none;
 }
 
+/** 
+ * The value wrapper around the `ValueUnion`
+ * union
+ */
 public struct Value
 {
+    /** 
+     * The actual value in union
+     * format
+     */
     public ValueUnion value;
 
-    this(Object value)
+    // TODO: COme back to this
+    private this(Object value)
     {
         this.value.object = value;
     }
 
     // TODO: COme back to this and types
-    this(int integer)
+    private this(int integer)
     {
         
     }
     
     // TODO: COme back to this and types
-    this(uint uinteger)
+    private this(uint uinteger)
     {
         this.value.uinteger = uinteger;
     }
