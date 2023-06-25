@@ -22,29 +22,51 @@ private bool isSupportedFunction(alias FuncSymbol)()
     return arity!(FuncSymbol) == 0 && isSupportedReturn!(FuncSymbol);
 }
 
+/** 
+ * This wraps a provided function
+ * and `Future` toghether in a way
+ * such that one can submit this
+ * to a provider as a kind-of `Task`
+ * which when completed will wake up
+ * those waiting on the `Future`
+ */
 private class FutureTask : Task
 {
-    // Related future for this task
+    /** 
+     * Related future for this task
+     */
     private Future future;
 
-    // Function to call
+    /** 
+     * Function to call
+     */
     private Value function() func;
 
-
+    /** 
+     * Constructs a new `FutureTask` with the
+     * provided future and function to run
+     *
+     * Params:
+     *   future = the `Future` to associate with
+     *   func = the function to run
+     */
     this(Future future, Value function() func)
     {
         this.future = future;
         this.func = func;
     }
 
-   
+    /** 
+     * The wrapper task that will run and extract
+     * any values/errors and report these back
+     * to the associated `Future`
+     */
     public void run()
     {
-        // TODO: May this boitjie throw functions?
-        // ... if it can we could get errors and
-        // ... set the Future below correctly
+        // If there waas an error in calling `func()`
         bool hasError;
         
+        // Return value (in non-error case)
         Value retVal;
 
         try
