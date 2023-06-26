@@ -6,6 +6,7 @@ module guillotine.providers.sequential;
 import libsnooze;
 import guillotine.provider;
 import std.container.slist;
+import std.range : walkLength;
 import core.sync.mutex : Mutex;
 import core.thread : Thread;
 import guillotine.exceptions;
@@ -107,7 +108,6 @@ public final class Sequential : Provider
                 Task potTask;
 
                 // If there are any items
-                import std.range;
                 if(walkLength(taskQueue[]) > 0)
                 {
                     // Get the front item
@@ -126,12 +126,10 @@ public final class Sequential : Provider
                     potTask.run();
                 }
 
-                // TODO: After wait check if boolean
-                // ... was flipped to stop (no longer run)
             }
             catch(InterruptedException e)
             {
-                // TODO: Handle by doing nothing
+                // Handle by doing nothing, retry wait()
                 continue;
             }
             catch(SnoozeError e)
