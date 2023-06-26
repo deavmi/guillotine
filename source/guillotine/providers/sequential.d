@@ -1,3 +1,6 @@
+/** 
+ * Serial execution strategy
+ */
 module guillotine.providers.sequential;
 
 import libsnooze;
@@ -12,6 +15,10 @@ version(unittest)
     import std.stdio : writeln;
 }
 
+/** 
+ * Provides sequential or "serial" execution
+ * on a singular thread of the consumed tasks
+ */
 public final class Sequential : Provider
 {
     private Event event;
@@ -28,6 +35,13 @@ public final class Sequential : Provider
         this.event.ensure(runner);
     }
 
+    /** 
+     * Consumes the provided task for
+     * execution in the near future
+     *
+     * Params:
+     *   task = the `Task` to consume
+     */
     public override void consumeTask(Task task)
     {
         version(unittest)
@@ -57,9 +71,10 @@ public final class Sequential : Provider
 
     public void start()
     {
-        // TODO: Set flag
+        // Set the running flag to true
         this.running = true;
 
+        // Start the runner thread
         runner.start();
     }   
 
@@ -151,5 +166,7 @@ public final class Sequential : Provider
 
         // Wait for the runner thread to fully exit
         this.runner.join();
+
+        // TODO: Destroy the libsnooze event here
     }
 }
