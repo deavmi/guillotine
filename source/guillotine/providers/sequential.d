@@ -5,6 +5,7 @@ import guillotine.provider;
 import std.container.slist;
 import core.sync.mutex : Mutex;
 import core.thread : Thread;
+import guillotine.exceptions;
 
 version(unittest)
 {
@@ -128,16 +129,27 @@ public final class Sequential : Provider
      *
      * This method will hang till said task
      * has finished executing.
+     *
+     * Throws:
+     *   `GuillotineException` on error stopping
+     * the worker
      */
     public void stop()
     {
-        // TODO: set flag
+        // Set running flag to false
         this.running = false;
 
-        // TODO: notify
-        this.event.notify(runner);
+        try
+        {
+            // Notify the sleeping worker to wake up
+            this.event.notify(runner);
+        }
+        catch(SnoozeError e)
+        {
+            throw new GuillotineException("Error notifying() sleeping worker in stop()");
+        }
 
-        // TODO: Should we hang here till finished?
+        // Wait for the runner thread to fully exit
         this.runner.join();
     }
 }

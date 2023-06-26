@@ -31,6 +31,9 @@ public interface Provider
      * tasks from being submitted and if
      * some are still running then this
      * should hang till all have finished.
+     *
+     * Throws:
+     *   `GuillotineException` on failure to stop
      */
     public void stop();
 }
