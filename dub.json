@@ -7,7 +7,7 @@
 		"libsnooze": ">=1.2.0-beta"
 	},
 	"description": "Executor framework with future-based task submission and pluggable thread execution engines",
-	"homepage": "https://deavmi.assigned.network/",
+	"homepage": "https://deavmi.assigned.network",
 	"license": "LGPL 3.0",
 	"name": "guillotine",
 	"targetType": "library"
