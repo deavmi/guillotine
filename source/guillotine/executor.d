@@ -107,7 +107,7 @@ private class FutureTask : Task
  * Params:
  *   FuncIn = The name of the function to wrap
  */
-template WorkerFunction(alias FuncIn)
+private template WorkerFunction(alias FuncIn)
 {
     /** 
      * Generated "wrapper" function
