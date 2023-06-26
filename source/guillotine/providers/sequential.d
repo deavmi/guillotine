@@ -27,6 +27,9 @@ public final class Sequential : Provider
     private Thread runner;
     private bool running;
 
+    /** 
+     * Constricts a new `Sequential` provider
+     */
     this()
     {
         this.event = new Event();
@@ -69,6 +72,9 @@ public final class Sequential : Provider
         }
     }
 
+    /** 
+     * Starts the provider's execution thread
+     */
     public void start()
     {
         // Set the running flag to true
