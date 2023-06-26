@@ -32,3 +32,8 @@ public import guillotine.result : Result;
  * of a result
  */
 public import guillotine.value : Value, ValueUnion, Empty;
+
+/** 
+ * Exception types
+ */
+public import guillotine.exceptions;
