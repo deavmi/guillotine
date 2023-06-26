@@ -298,7 +298,7 @@ unittest
 
 version(unittest)
 {
-    public int hi()
+    private int hi()
     {
         writeln("Let's go hi()!");
 
@@ -308,7 +308,7 @@ version(unittest)
         return 69;
     }
 
-    public float hiFloat()
+    private float hiFloat()
     {
         writeln("Let's go hiFloat()!");
 
@@ -318,7 +318,7 @@ version(unittest)
         return 69.420;
     }
 
-    public void hiVoid()
+    private void hiVoid()
     {
         writeln("Let's go hiVoid()!");
 
