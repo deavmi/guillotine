@@ -3,9 +3,8 @@
  */
 module guillotine.future;
 
-// TODO: Examine the below import which seemingly fixes stuff for libsnooze
-import libsnooze.clib;
-import libsnooze;
+import core.sync.mutex : Mutex;
+import core.sync.condition : Condition;
 
 import guillotine.result : Result;
 
@@ -26,9 +25,16 @@ public enum State
 public final class Future
 {
     /** 
-     * `libsnooze` event
+     * Mutex for condition
+     * variable
      */
-    private Event event;
+    private Mutex mutex;
+
+    /** 
+     * Condition variable
+     * used for signalling
+     */
+    private Condition signal;
 
     /** 
      * State of the future
@@ -50,7 +56,8 @@ public final class Future
      */
     public this()
     {
-        this.event = new Event();
+        this.mutex = new Mutex();
+        this.signal = new Condition(this.mutex);
     }
 
     /** 
@@ -89,7 +96,7 @@ public final class Future
             {
                 try
                 {
-                    event.wait();
+                    signal.wait();
                     doneYet = true;
                 }
                 catch(InterruptedException e)
@@ -137,7 +144,7 @@ public final class Future
         this.state = State.FINISHED;
 
         // Wake up any sleepers
-        this.event.notifyAll();
+        this.signal.notifyAll();
     }
 
     /** 
@@ -158,6 +165,6 @@ public final class Future
         this.state = State.ERRORED;
 
         // Wake up any sleepers
-        this.event.notifyAll();
+        this.signal.notifyAll();
     }
 }
