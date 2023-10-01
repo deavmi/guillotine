@@ -16,7 +16,7 @@ private bool isSupportedReturn(alias FuncSymbol)()
 {
     return __traits(isSame, ReturnType!(FuncSymbol), int) ||
            __traits(isSame, ReturnType!(FuncSymbol), bool) ||
-           isAssignable!(Object, FuncSymbol) ||
+           isAssignable!(Object, ReturnType!(FuncSymbol)) ||
            __traits(isSame, ReturnType!(FuncSymbol), float) ||
            __traits(isSame, ReturnType!(FuncSymbol), void);
 }
@@ -143,7 +143,7 @@ private template WorkerFunction(alias FuncIn)
         {
             valUnion.str = FuncIn();
         }
-        else static if(__traits(isSame, funcInReturn, Object))
+        else static if(isAssignable!(Object, funcInReturn))
         {
             valUnion.object = FuncIn();
         }
