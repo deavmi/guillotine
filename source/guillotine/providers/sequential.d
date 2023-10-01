@@ -9,7 +9,7 @@ import std.range : walkLength;
 import core.sync.mutex : Mutex;
 import core.sync.condition : Condition;
 import core.sync.exception : SyncError;
-import core.time : dur;
+import core.time : Duration, dur;
 
 import core.thread : Thread;
 import guillotine.exceptions;
@@ -31,6 +31,7 @@ public final class Sequential : Provider
     private Mutex taskQueueLock;
     private Thread runner;
     private bool running;
+    private Duration wakeInterval;
 
     /** 
      * Constricts a new `Sequential` provider
@@ -41,6 +42,40 @@ public final class Sequential : Provider
         this.event = new Condition(this.mutex);
         this.taskQueueLock = new Mutex();
         this.runner = new Thread(&worker);
+
+        // TODO: Choose a sane efault
+        this.wakeInterval = dur!("msecs")(10);
+    }
+
+    /** 
+     * Sets the interval at which the runner
+     * must forcefully wakeup from slumber
+     * and check for any new jobs - in
+     * the case one was submitted prior
+     * to sleeping.
+     *
+     * Note that must of the time slumber
+     * will stopped if a task is submitted
+     * WHILST we are ALREADY sleeping. This
+     * is to aid in the times where that is
+     * NOT the case
+     *
+     * Params:
+     *   interval = the `Duration`
+     */
+    public void setWakeInterval(Duration interval)
+    {
+        this.wakeInterval = interval;
+    }
+
+    /** 
+     * Returns the slumber interval
+     *
+     * Returns: the `Duration`
+     */
+    public Duration getWakeInterval()
+    {
+        return this.wakeInterval;
     }
 
     /** 
@@ -100,7 +135,7 @@ public final class Sequential : Provider
                 // Sleep till awoken for an enqueue
                 import std.stdio;
                 writeln("Worker wait...");
-                bool b = event.wait(dur!("msecs")(10));
+                bool b = event.wait(this.wakeInterval);
                 writeln("Worker wait... [done] ", b);
 
                 // TODO: Add syncerror checking?
