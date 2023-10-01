@@ -18,7 +18,6 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
         dc: [dmd-latest, ldc-latest, gdc-latest]
 
     runs-on: ubuntu-latest
@@ -39,7 +38,7 @@ jobs:
         # Build and run tests, as defined by `unittest` configuration
         # In this mode, `mainSourceFile` is excluded and `version (unittest)` are included
         # See https://dub.pm/package-format-json.html#configurations
-        dub test --compiler=$DC --coverage
+        dub test --compiler=${{ matrix.dc }} --coverage
 
     - name: Coverage upload
       run: |
