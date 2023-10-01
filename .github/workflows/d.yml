@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        dc: [dmd-latest, ldc-latest, gdc-latest]
+        dc: [dmd, ldc, gdc]
 
     runs-on: ubuntu-latest
 
