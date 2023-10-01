@@ -98,6 +98,7 @@ public final class Sequential : Provider
                 this.mutex.lock();
 
                 // Sleep till awoken for an enqueue
+                import std.stdio;
                 writeln("Worker wait...");
                 bool b = event.wait(dur!("msecs")(10));
                 writeln("Worker wait... [done] ", b);
