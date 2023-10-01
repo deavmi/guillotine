@@ -6,6 +6,7 @@ module guillotine.future;
 import core.sync.mutex : Mutex;
 import core.sync.condition : Condition;
 import core.sync.exception : SyncError;
+import core.time : dur;
 
 import guillotine.result : Result;
 
@@ -91,18 +92,8 @@ public final class Future
         // the FutureTask sets to RUNNING and when our main thread
         // calls await() can have it pickup on the NOT_STARTED case)
         else
-        {            
-            // Lock mutex
-            this.mutex.lock();
-
-            // Wait on condition variable
-            this.signal.wait();
-
-            // TODO: Add syncerror checking?
-            
-            // Unlock mutex
-            this.mutex.unlock();
-
+        {
+            doWait();
 
             // If we had an error then throw it
             if(this.state == State.ERRORED)
@@ -115,6 +106,43 @@ public final class Future
             {
                 return this.result;
             }
+        }
+    }
+
+    /** 
+     * Looped condition variable wait
+     * which checks state on entry
+     * just incase, notification
+     * was set prior to entry.
+     *
+     * Else, we to a timed-wait,
+     * because between the loop-condition
+     * check and the wait call it may
+     * have been notified and we should
+     * wake up and check again.
+     *
+     * But we don't want to spin,
+     * so we also can potentially
+     * sleep till notified.
+     */
+    private void doWait()
+    {
+        // Lock mutex
+        this.mutex.lock();
+
+        scope(exit)
+        {
+            // Unlock mutex
+            this.mutex.unlock();
+        }
+
+        while(this.state != State.ERRORED && this.state != State.FINISHED)
+        {
+            // TODO: Add syncerror checking?
+            this.signal.wait(dur!("msecs")(400));
+            
+            import std.stdio;
+            writeln("Awake");
         }
     }
 
@@ -139,6 +167,8 @@ public final class Future
 
         // Wake up any sleepers
         this.signal.notifyAll();
+        import std.stdio;
+        writeln("Sent notify");
     }
 
     /** 
