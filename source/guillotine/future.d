@@ -91,20 +91,18 @@ public final class Future
         // the FutureTask sets to RUNNING and when our main thread
         // calls await() can have it pickup on the NOT_STARTED case)
         else
-        {
-            bool doneYet = false;
-            while(!doneYet)
-            {
-                try
-                {
-                    signal.wait();
-                    doneYet = true;
-                }
-                catch(SyncError e)
-                {
-                    // TODO: What should we do here?
-                }
-            }
+        {            
+            // Lock mutex
+            this.mutex.lock();
+
+            // Wait on condition variable
+            this.signal.wait();
+
+            // TODO: Add syncerror checking?
+            
+            // Unlock mutex
+            this.mutex.unlock();
+
 
             // If we had an error then throw it
             if(this.state == State.ERRORED)
