@@ -8,6 +8,7 @@ import guillotine.value;
 import guillotine.result : Result;
 import guillotine.provider;
 import std.traits : isFunction, isDelegate, FunctionTypeOf, ReturnType, arity;
+import std.traits : isAssignable;
 import std.functional : toDelegate;
 
 // TODO: Document
@@ -15,7 +16,7 @@ private bool isSupportedReturn(alias FuncSymbol)()
 {
     return __traits(isSame, ReturnType!(FuncSymbol), int) ||
            __traits(isSame, ReturnType!(FuncSymbol), bool) ||
-           __traits(isSame, ReturnType!(FuncSymbol), Object) ||
+           isAssignable!(Object, ReturnType!(FuncSymbol)) ||
            __traits(isSame, ReturnType!(FuncSymbol), float) ||
            __traits(isSame, ReturnType!(FuncSymbol), void);
 }
@@ -142,7 +143,7 @@ private template WorkerFunction(alias FuncIn)
         {
             valUnion.str = FuncIn();
         }
-        else static if(__traits(isSame, funcInReturn, Object))
+        else static if(isAssignable!(Object, funcInReturn))
         {
             valUnion.object = FuncIn();
         }
