@@ -1,7 +1,7 @@
 guillotine
 ==========
 
-[![D](https://github.com/deavmi/guillotine/actions/workflows/d.yml/badge.svg)](https://github.com/deavmi/guillotine/actions/workflows/d.yml) ![DUB](https://img.shields.io/dub/v/guillotine?color=%23c10000ff%20&style=flat-square) ![DUB](https://img.shields.io/dub/dt/guillotine?style=flat-square) ![DUB](https://img.shields.io/dub/l/guillotine?style=flat-square)
+[![D](https://github.com/deavmi/guillotine/actions/workflows/d.yml/badge.svg)](https://github.com/deavmi/guillotine/actions/workflows/d.yml) ![DUB](https://img.shields.io/dub/v/guillotine?color=%23c10000ff%20&style=flat-square) ![DUB](https://img.shields.io/dub/dt/guillotine?style=flat-square) ![DUB](https://img.shields.io/dub/l/guillotine?style=flat-square) [![Coverage Status](https://coveralls.io/repos/github/deavmi/guillotine/badge.svg?branch=master)](https://coveralls.io/github/deavmi/guillotine?branch=master)
 
 Executor framework with future-based task submission and pluggable thread execution engines
 
