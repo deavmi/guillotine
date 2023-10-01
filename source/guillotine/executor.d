@@ -225,8 +225,14 @@ public class Executor
         Value delegate() ptr;
         alias func = Symbol;
 
-
-        ptr = toDelegate(&WorkerFunction!(func).workerFunc);
+        static if(isDelegate!(Symbol))
+        {
+            ptr = &WorkerFunction!(func).workerFunc;
+        }
+        else
+        {
+            ptr = toDelegate(&WorkerFunction!(func).workerFunc);
+        }
 
         version(unittest)
         {
