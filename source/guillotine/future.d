@@ -5,6 +5,7 @@ module guillotine.future;
 
 import core.sync.mutex : Mutex;
 import core.sync.condition : Condition;
+import core.sync.exception : SyncError;
 
 import guillotine.result : Result;
 
@@ -99,14 +100,9 @@ public final class Future
                     signal.wait();
                     doneYet = true;
                 }
-                catch(InterruptedException e)
+                catch(SyncError e)
                 {
-                    // Do nothing
-                }
-                catch(FatalException e)
-                {
-                    // TODO: Throw a FatalGuillaotine here
-                    // TODO: make a custom guillotine exception
+                    // TODO: What should we do here?
                 }
             }
 
