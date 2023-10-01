@@ -7,7 +7,8 @@ import guillotine.future : Future;
 import guillotine.value;
 import guillotine.result : Result;
 import guillotine.provider;
-import std.traits : isFunction, FunctionTypeOf, ReturnType, arity;
+import std.traits : isFunction, isDelegate, FunctionTypeOf, ReturnType, arity;
+import std.functional : toDelegate;
 
 // TODO: Document
 private bool isSupportedReturn(alias FuncSymbol)()
@@ -44,7 +45,7 @@ private class FutureTask : Task
     /** 
      * Function to call
      */
-    private Value function() func;
+    private Value delegate() func;
 
     /** 
      * Constructs a new `FutureTask` with the
@@ -54,7 +55,7 @@ private class FutureTask : Task
      *   future = the `Future` to associate with
      *   func = the function to run
      */
-    this(Future future, Value function() func)
+    this(Future future, Value delegate() func)
     {
         this.future = future;
         this.func = func;
@@ -217,15 +218,15 @@ public class Executor
      * Returns: the task's `Future`
      */
     public Future submitTask(alias Symbol)()
-    if (isFunction!(Symbol) && isSupportedFunction!(Symbol))
+    if ((isFunction!(Symbol) || isDelegate!(Symbol)) && isSupportedFunction!(Symbol))
     {
         FutureTask task;
 
-        Value function() ptr;
+        Value delegate() ptr;
         alias func = Symbol;
-        
 
-        ptr = &WorkerFunction!(func).workerFunc;
+
+        ptr = toDelegate(&WorkerFunction!(func).workerFunc);
 
         version(unittest)
         {
