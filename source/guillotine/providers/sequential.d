@@ -180,6 +180,8 @@ public final class Sequential : Provider
             {
                 // TODO: What to do?
                 // Handle by doing nothing, retry wait()
+                import std.stdio;
+                writeln("SyncError: ", e);
                 continue;
             }
         }
