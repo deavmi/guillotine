@@ -3,9 +3,10 @@
  */
 module guillotine.future;
 
-// TODO: Examine the below import which seemingly fixes stuff for libsnooze
-import libsnooze.clib;
-import libsnooze;
+import core.sync.mutex : Mutex;
+import core.sync.condition : Condition;
+import core.sync.exception : SyncError;
+import core.time : dur;
 
 import guillotine.result : Result;
 
@@ -26,9 +27,16 @@ public enum State
 public final class Future
 {
     /** 
-     * `libsnooze` event
+     * Mutex for condition
+     * variable
      */
-    private Event event;
+    private Mutex mutex;
+
+    /** 
+     * Condition variable
+     * used for signalling
+     */
+    private Condition signal;
 
     /** 
      * State of the future
@@ -50,7 +58,8 @@ public final class Future
      */
     public this()
     {
-        this.event = new Event();
+        this.mutex = new Mutex();
+        this.signal = new Condition(this.mutex);
     }
 
     /** 
@@ -84,24 +93,7 @@ public final class Future
         // calls await() can have it pickup on the NOT_STARTED case)
         else
         {
-            bool doneYet = false;
-            while(!doneYet)
-            {
-                try
-                {
-                    event.wait();
-                    doneYet = true;
-                }
-                catch(InterruptedException e)
-                {
-                    // Do nothing
-                }
-                catch(FatalException e)
-                {
-                    // TODO: Throw a FatalGuillaotine here
-                    // TODO: make a custom guillotine exception
-                }
-            }
+            doWait();
 
             // If we had an error then throw it
             if(this.state == State.ERRORED)
@@ -114,6 +106,43 @@ public final class Future
             {
                 return this.result;
             }
+        }
+    }
+
+    /** 
+     * Looped condition variable wait
+     * which checks state on entry
+     * just incase, notification
+     * was set prior to entry.
+     *
+     * Else, we to a timed-wait,
+     * because between the loop-condition
+     * check and the wait call it may
+     * have been notified and we should
+     * wake up and check again.
+     *
+     * But we don't want to spin,
+     * so we also can potentially
+     * sleep till notified.
+     */
+    private void doWait()
+    {
+        // Lock mutex
+        this.mutex.lock();
+
+        scope(exit)
+        {
+            // Unlock mutex
+            this.mutex.unlock();
+        }
+
+        while(this.state != State.ERRORED && this.state != State.FINISHED)
+        {
+            // TODO: Add syncerror checking?
+            this.signal.wait(dur!("msecs")(400));
+            
+            import std.stdio;
+            writeln("Awake");
         }
     }
 
@@ -137,7 +166,9 @@ public final class Future
         this.state = State.FINISHED;
 
         // Wake up any sleepers
-        this.event.notifyAll();
+        this.signal.notifyAll();
+        import std.stdio;
+        writeln("Sent notify");
     }
 
     /** 
@@ -158,6 +189,6 @@ public final class Future
         this.state = State.ERRORED;
 
         // Wake up any sleepers
-        this.event.notifyAll();
+        this.signal.notifyAll();
     }
 }

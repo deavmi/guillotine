@@ -3,11 +3,14 @@
  */
 module guillotine.providers.sequential;
 
-import libsnooze;
 import guillotine.provider;
 import std.container.slist;
 import std.range : walkLength;
 import core.sync.mutex : Mutex;
+import core.sync.condition : Condition;
+import core.sync.exception : SyncError;
+import core.time : Duration, dur;
+
 import core.thread : Thread;
 import guillotine.exceptions;
 
@@ -22,21 +25,57 @@ version(unittest)
  */
 public final class Sequential : Provider
 {
-    private Event event;
+    private Mutex mutex;
+    private Condition event;
     private SList!(Task) taskQueue;
     private Mutex taskQueueLock;
     private Thread runner;
     private bool running;
+    private Duration wakeInterval;
 
     /** 
      * Constricts a new `Sequential` provider
      */
     this()
     {
-        this.event = new Event();
+        this.mutex = new Mutex();
+        this.event = new Condition(this.mutex);
         this.taskQueueLock = new Mutex();
         this.runner = new Thread(&worker);
-        this.event.ensure(runner);
+
+        // TODO: Choose a sane efault
+        this.wakeInterval = dur!("msecs")(10);
+    }
+
+    /** 
+     * Sets the interval at which the runner
+     * must forcefully wakeup from slumber
+     * and check for any new jobs - in
+     * the case one was submitted prior
+     * to sleeping.
+     *
+     * Note that must of the time slumber
+     * will stopped if a task is submitted
+     * WHILST we are ALREADY sleeping. This
+     * is to aid in the times where that is
+     * NOT the case
+     *
+     * Params:
+     *   interval = the `Duration`
+     */
+    public void setWakeInterval(Duration interval)
+    {
+        this.wakeInterval = interval;
+    }
+
+    /** 
+     * Returns the slumber interval
+     *
+     * Returns: the `Duration`
+     */
+    public Duration getWakeInterval()
+    {
+        return this.wakeInterval;
     }
 
     /** 
@@ -62,10 +101,8 @@ public final class Sequential : Provider
         // Unlock the queue
         taskQueueLock.unlock();
 
-        // Wake up the runner (just using all to avoid a catch for exception
-        // ... which would occur if wait() hasn't been called atleast once
-        // ... in `runner`
-        event.notifyAll();
+        // Wake up the runner
+        event.notify();
 
         version(unittest)
         {
@@ -92,8 +129,20 @@ public final class Sequential : Provider
         {
             try
             {
+                // Lock mutex
+                this.mutex.lock();
+
                 // Sleep till awoken for an enqueue
-                event.wait();
+                import std.stdio;
+                writeln("Worker wait...");
+                bool b = event.wait(this.wakeInterval);
+                writeln("Worker wait... [done] ", b);
+
+                // TODO: Add syncerror checking?
+
+                // Unlock mutex
+                this.mutex.unlock();
+
 
                 // Check if we are running, if not, exit
                 if(!running)
@@ -127,14 +176,13 @@ public final class Sequential : Provider
                 }
 
             }
-            catch(InterruptedException e)
+            catch(SyncError e)
             {
+                // TODO: What to do?
                 // Handle by doing nothing, retry wait()
+                import std.stdio;
+                writeln("SyncError: ", e);
                 continue;
-            }
-            catch(SnoozeError e)
-            {
-                // TODO: Stop and handle this
             }
         }
     }
@@ -158,19 +206,10 @@ public final class Sequential : Provider
         // Set running flag to false
         this.running = false;
 
-        try
-        {
-            // Notify the sleeping worker to wake up
-            this.event.notify(runner);
-        }
-        catch(SnoozeError e)
-        {
-            throw new GuillotineException("Error notifying() sleeping worker in stop()");
-        }
+        // Notify the sleeping worker to wake up
+        this.event.notify();
 
         // Wait for the runner thread to fully exit
         this.runner.join();
-
-        // TODO: Destroy the libsnooze event here
     }
 }
